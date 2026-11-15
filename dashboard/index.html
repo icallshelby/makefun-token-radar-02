@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Launch Radar (radar-3)</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-main">
+        <div class="logo-area">
+          <div class="radar-ping"></div>
+          <h1>TOKEN LAUNCH RADAR</h1>
+          <span class="badge model-badge">model: radar-3</span>
+        </div>
+        <div class="header-stats" id="headerStats">
+          <div class="stat-pill"><span class="label">Board:</span> <span class="val" id="statRows">198</span></div>
+          <div class="stat-pill"><span class="label">Watchlist:</span> <span class="val" id="statWatchlist">40</span></div>
+          <div class="stat-pill"><span class="label">As Of:</span> <span class="val" id="statAsOf">2026-11-14</span></div>
+        </div>
+      </div>
+      <p class="subtitle">Systematic valuation of pre-token DeFi & infrastructure protocols from immutable snapshot data with runtime category-calibrated multiples, asymmetric growth weighting, logarithmic maturity curves, and multi-chain breadth multipliers.</p>
+    </header>
+
+    <!-- Model Explainer Toggle / Box -->
+    <section class="model-explainer">
+      <div class="explainer-header">
+        <h3>How Each Row is Priced (radar-3 Calibration)</h3>
+        <button id="toggleExplainer" class="text-btn">Hide details</button>
+      </div>
+      <div class="explainer-body" id="explainerBody">
+        <div class="formula-box">
+          <code>implied = max(1, round(TVL × CategoryMultiple × GrowthMult × MaturityMult × BreadthMult))</code>
+        </div>
+        <div class="constants-grid">
+          <div class="c-item"><strong>Calibration:</strong> Runtime median mcap/TVL from snapshot tokenized protocols (mcap>0, tvl>0). Min-N=5 required for category median; else global median fallback. Clamped to [0.03, 0.80].</div>
+          <div class="c-item"><strong>Growth:</strong> Asymmetric clamp[-50%, +150%]. Positive weight 0.6, negative weight 0.9 (downsides penalize harder)</div>
+          <div class="c-item"><strong>Maturity:</strong> Logarithmic curve up to 4 years (1,460 days), floor 0.55 + range 0.45</div>
+          <div class="c-item"><strong>Breadth:</strong> +2% per additional active chain up to 10 chains max (+20% cap)</div>
+          <div class="c-item"><strong>House Filter:</strong> Strict exclusion of CEX, wrappers, LSTs, and canonical bridges across all rows</div>
+        </div>
+        <div style="margin-top: 14px;">
+          <div class="section-title" style="margin-bottom: 6px;">Runtime Category Calibration Table (MIN_N=5)</div>
+          <div class="table-container" style="max-height: 200px; overflow-y: auto;">
+            <table class="radar-table" style="font-size: 12px;">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Live Comps (n)</th>
+                  <th>Median Multiple</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody id="calibrationTbody">
+                <!-- Populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <div class="tabs-group">
+        <button class="tab-btn active" data-tab="pre-token">Pre-Token Board (<span id="countPre">198</span>)</button>
+        <button class="tab-btn" data-tab="live">Live Tokens (<span id="countLive">24</span>)</button>
+      </div>
+      <div class="filters-group">
+        <input type="text" id="searchInput" placeholder="Search protocol, category, chain..." autocomplete="off">
+        <select id="categorySelect">
+          <option value="">All Categories</option>
+        </select>
+        <select id="chainSelect">
+          <option value="">All Chains</option>
+        </select>
+        <button id="resetFilters" class="subtle-btn">Reset</button>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Pre-Token Table View -->
+      <div id="preTokenView" class="view-panel active">
+        <div class="table-container">
+          <table class="radar-table" id="boardTable">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="rank">Rank</th>
+                <th class="sortable" data-sort="name">Protocol</th>
+                <th class="sortable" data-sort="tvl">TVL ($)</th>
+                <th class="sortable" data-sort="change">7d Change</th>
+                <th class="sortable" data-sort="age">Age</th>
+                <th class="sortable" data-sort="multiple">Multiple</th>
+                <th class="sortable desc-default" data-sort="implied">Implied Value ($)</th>
+              </tr>
+            </thead>
+            <tbody id="boardTbody">
+              <!-- Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Live Tokens View -->
+      <div id="liveView" class="view-panel">
+        <div class="live-notice">
+          <strong>Notice:</strong> The protocols below already trade on secondary markets. Market capitalization and TVL are shown for reference; these are not model-implied claims.
+        </div>
+        <div class="table-container">
+          <table class="radar-table" id="liveTable">
+            <thead>
+              <tr>
+                <th>Protocol</th>
+                <th>Category</th>
+                <th>Chains</th>
+                <th>TVL ($)</th>
+                <th>Market Cap ($)</th>
+                <th>7d Change</th>
+              </tr>
+            </thead>
+            <tbody id="liveTbody">
+              <!-- Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- Detail Drawer / Panel Modal -->
+    <div id="detailOverlay" class="detail-overlay">
+      <div class="detail-drawer" id="detailDrawer">
+        <div class="drawer-header">
+          <div class="drawer-title-area">
+            <span class="drawer-rank" id="drawerRank">#1</span>
+            <h2 id="drawerName">Protocol Name</h2>
+            <span class="badge category-badge" id="drawerCategory">Lending</span>
+          </div>
+          <button class="close-btn" id="closeDrawer">&times;</button>
+        </div>
+        <div class="drawer-body" id="drawerBody">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Methodology Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <p><strong>Methodology Note:</strong> Implied valuation figures are this entry's proprietary analytical claims, never make.fun's. A protocol is recorded as having no token, never that it has none. Snapshot source: LlamaFi protocols snapshot (as of 2026-11-14).</p>
+        <p class="copyright">Token Launch Radar (radar-3) · Standard library TypeScript implementation · Zero external network dependencies.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="../data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
