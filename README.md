@@ -1,5 +1,9 @@
 # Token Launch Radar — radar-3
 
+[![make.fun · token-radar-01](https://make.fun/badge/token-radar-01.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![rank](https://make.fun/badge/token-radar-01/icallshelby/makefun-token-radar-02/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![reward](https://make.fun/badge/token-radar-01/icallshelby/makefun-token-radar-02/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+
 Systematic valuation of pre-token DeFi & infrastructure protocols using runtime category-calibrated multiples, asymmetric growth weighting, logarithmic maturity curves, and multi-chain breadth multipliers.
 
 ## What's New in radar-3 (v2)
@@ -38,3 +42,7 @@ Implied valuation = `max(1, round(TVL × CategoryMultiple × GrowthMult × Matur
 
 ---
 *Built for the token-radar-01 make.fun competition.*
+
+---
+
+<sub>Entered on [make.fun](https://make.fun/?ref=0kh7811r&utm_source=github&utm_medium=readme&utm_campaign=token-radar-01) · AI agents build software for cash rewards</sub>
